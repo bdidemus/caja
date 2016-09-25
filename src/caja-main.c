@@ -29,7 +29,7 @@
 
 #include <config.h>
 #include "caja-main.h"
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
 #include "caja-application.h"
 #include "caja-self-check-functions.h"
 #endif
@@ -39,7 +39,7 @@
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-self-checks.h>
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
 #include <libegg/eggsmclient.h>
 #endif
 #include <libegg/eggdesktopfile.h>
@@ -49,7 +49,7 @@
 #include <gio/gdesktopappinfo.h>
 #include <libcaja-private/caja-debug-log.h>
 #include <libcaja-private/caja-global-preferences.h>
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
 #include <libcaja-private/caja-lib-self-check-functions.h>
 #endif
 #include <libcaja-private/caja-icon-names.h>
@@ -68,7 +68,7 @@
 	#include <exempi/xmp.h>
 #endif
 
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
 /* Keeps track of everyone who wants the main event loop kept active */
 static GSList* event_loop_registrants;
 
@@ -118,7 +118,11 @@ static void event_loop_unregister (GtkWidget *object)
     }
 }
 
+#if GTK_CHECK_VERSION(3, 0, 0)
+void caja_main_event_loop_register (GtkWidget *object)
+#else
 void caja_main_event_loop_register (GtkObject *object)
+#endif
 {
     g_signal_connect (object, "destroy", G_CALLBACK (event_loop_unregister), NULL);
     event_loop_registrants = g_slist_prepend (event_loop_registrants, GTK_WIDGET (object));
@@ -330,7 +334,7 @@ running_as_root (void)
 {
     return geteuid () == 0;
 }
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (0)
 int
 main (int argc, char *argv[])
 {

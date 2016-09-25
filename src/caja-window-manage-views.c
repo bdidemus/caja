@@ -33,7 +33,7 @@
 #include "caja-location-bar.h"
 #include "caja-search-bar.h"
 #include "caja-pathbar.h"
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
 #include "caja-main.h"
 #endif
 #include "caja-window-private.h"
@@ -603,7 +603,7 @@ caja_window_slot_open_location_full (CajaWindowSlot *slot,
     } else if (target_navigation) {
         target_window = caja_application_create_navigation_window
             (window->application,
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
              NULL,
 #endif
              gtk_window_get_screen (GTK_WINDOW (window)));
@@ -1199,7 +1199,7 @@ got_file_info_for_view_selection_callback (CajaFile *file,
     GFile *location;
     GMountOperation *mount_op;
     MountNotMountedData *data;
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (0)
     CajaApplication *app;
 #endif
     slot = callback_data;
@@ -1314,7 +1314,7 @@ got_file_info_for_view_selection_callback (CajaFile *file,
              * happens when a new window cannot display its initial URI.
              */
             /* if this is the only window, we don't want to quit, so we redirect it to home */
-#if GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (0)
             app = CAJA_APPLICATION (g_application_get_default ());
 			
             if (g_list_length (gtk_application_get_windows (GTK_APPLICATION (app))) == 1) {
@@ -1353,7 +1353,6 @@ got_file_info_for_view_selection_callback (CajaFile *file,
                 /* Since this is a window, destroying it will also unref it. */
                 gtk_widget_destroy (GTK_WIDGET (window));
             }
-
         }
         else
         {

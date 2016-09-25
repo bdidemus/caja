@@ -70,7 +70,7 @@ BUILT_SOURCES = \
 	caja-src-marshal.h \
 	$(dbus_freedesktop_built_sources) \
 	$(NULL)
-if WITH_GTK3
+if ENABLE_LIBUNIQUE
 caja_SOURCES = \
 	caja-actions.h \
 	caja-application.c \

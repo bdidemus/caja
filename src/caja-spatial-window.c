@@ -37,7 +37,7 @@
 #include "caja-desktop-window.h"
 #include "caja-bookmarks-window.h"
 #include "caja-location-dialog.h"
-#if !GTK_CHECK_VERSION (3, 0, 0)
+#if ENABLE_LIBUNIQUE == (1)
 #include "caja-main.h"
 #endif
 #include "caja-query-editor.h"
