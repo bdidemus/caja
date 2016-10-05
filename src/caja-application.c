@@ -3289,22 +3289,11 @@ caja_application_class_init (CajaApplicationClass *class)
 CajaApplication *
 caja_application_new (void)
 {
-    /*only register application when running in MATE/not as root 
-    to avoid errors in some GTK versions when invoking "sudo caja" */
-
-    if (!running_as_root ()){
         return g_object_new (CAJA_TYPE_APPLICATION,
                     "application-id", "org.mate.Caja",
                     "register-session", TRUE,
                     "flags", G_APPLICATION_HANDLES_OPEN,
                      NULL);
-    }
-    else{
-    return g_object_new (CAJA_TYPE_APPLICATION,
-                    "application-id", "org.mate.Caja",
-                    "flags", G_APPLICATION_HANDLES_OPEN,
-                     NULL);
-   }
 }
 #else
 static void
