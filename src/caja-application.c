@@ -156,6 +156,7 @@ struct _CajaApplicationPriv {
 	GVolumeMonitor *volume_monitor;
     gboolean no_desktop;
     gboolean force_desktop;
+    gboolean autostart;
     gchar *geometry;
 };
 
@@ -1577,9 +1578,6 @@ caja_application_create_desktop_windows (CajaApplication *application)
         caja_application_desktop_windows =
             g_list_prepend (caja_application_desktop_windows, window);
 #if ENABLE_LIBUNIQUE == (0)
-        /* Hold Caja open if the desktop is showing as autostart mode  
-         * fails to read from here and exiting will cause an exit/restart cycle
-         */
             gtk_application_add_window (GTK_APPLICATION (application),
 							    GTK_WINDOW (window));
     }
@@ -2915,9 +2913,10 @@ caja_application_local_command_line (GApplication *application,
     /* we need to do this here, as parsing the EggSMClient option context,
 	 * unsets this variable.
 	 */
-	autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
-	if (autostart_id != NULL && *autostart_id != '\0') {
-		no_default_window = TRUE;
+    autostart_id = g_getenv ("DESKTOP_AUTOSTART_ID");
+    if (autostart_id != NULL && *autostart_id != '\0') {
+        no_default_window = TRUE;
+        self->priv->autostart = TRUE;
         }
 
 
@@ -3160,7 +3159,6 @@ caja_application_startup (GApplication *app)
     CajaApplication *self = CAJA_APPLICATION (app);
     GApplication *instance;
     gboolean exit_with_last_window;
-    const gchar *autostart_id;
     exit_with_last_window = TRUE;
 
     /* chain up to the GTK+ implementation early, so gtk_init()
@@ -3252,7 +3250,9 @@ caja_application_startup (GApplication *app)
 
     instance = g_application_get_default ();
 
-    if (exit_with_last_window == FALSE){
+    /* Always hold in if autostarted to avoid restart loop          */
+    /* Otherwise follow preferences/running in mate/running as root */
+    if (exit_with_last_window == FALSE || self->priv->autostart == TRUE){
         g_application_hold (G_APPLICATION (instance));
     }
 
